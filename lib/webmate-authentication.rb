@@ -1,0 +1,1 @@
+require "webmate/authentication"
