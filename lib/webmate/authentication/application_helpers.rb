@@ -63,9 +63,6 @@ module Webmate
         app.register Warden
         app.helpers Webmate::Authentication::Helpers
 
-        # Enable Sessions
-        app.set :sessions, true
-
         unless Warden && Warden::Manager
           raise "WardenPlugin::Error - Install warden with 'gem install warden' to use plugin!"
         end
