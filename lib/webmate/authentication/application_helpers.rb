@@ -48,14 +48,28 @@ module Webmate
           redirect session[:return_to] ? session.delete(:return_to) : configatron.authentication.success_path
         end
 
-        post "/#{collection_name}/unauthenticated" do
-          redirect configatron.authentication.failure_path
-        end
-
         get "/#{collection_name}/sign_out" do
           authenticate(scope: scope)
           sign_out(scope)
           redirect configatron.authentication.logout_path
+        end
+
+        post "/#{collection_name}/unauthenticated" do
+          redirect configatron.authentication.failure_path
+        end
+
+        get "/#{collection_name}/sign_up" do
+          user = resource_class.new
+          slim :"registrations/new", locals: {user: user}
+        end
+
+        post '/users/sign_up' do
+          user = resource_class.new(params[resource_name])
+          if user.save
+            redirect '/'
+          else
+            slim :"registrations/new"
+          end
         end
       end
 
@@ -71,7 +85,10 @@ module Webmate
           manager.default_scope = :user
           manager.failure_app = app
         end
-        Warden::Manager.before_failure { |env, opts| env['REQUEST_METHOD'] = "POST" }
+        Warden::Manager.before_failure { |env, opts|
+          env['REQUEST_METHOD'] = "POST"
+          env['PATH_INFO'] = "/#{opts[:scope].to_s.pluralize}/unauthenticated"
+        }
         Warden::Strategies.add(:password, Webmate::Authentication::Strategies::Password)
       end
     end
