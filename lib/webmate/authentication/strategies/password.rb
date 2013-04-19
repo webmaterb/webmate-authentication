@@ -4,17 +4,23 @@ module Webmate
       class Password < Warden::Strategies::Base
         attr_accessor :scope
 
-        def resource_class
-          User
-        end
-
-        def valid?
-          username || password
-        end
-
         def authenticate!
           user = resource_class.authenticate(username, password)
           user.nil? ? fail!("Could not log in") : success!(user)
+        end
+
+        def valid?
+          username.present? && password.present?
+        end
+
+        def self.find(scope, id)
+          new({}, scope).resource_class.find(id)
+        end
+
+        private
+
+        def resource_class
+          scope.to_s.classify.constantize
         end
 
         def username
@@ -23,12 +29,6 @@ module Webmate
 
         def password
           params[scope.to_s]["password"]
-        end
-
-        class << self
-          def find(scope, id)
-            new({}, scope).resource_class.find(id)
-          end
         end
       end
     end

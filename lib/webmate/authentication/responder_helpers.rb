@@ -2,6 +2,15 @@ module Webmate
   module Authentication
     module ResponderHelpers
       include Helpers
+    end
+  end
+end
+
+module Webmate
+  module Authentication
+=begin
+    module ResponderHelpers
+      include Helpers
       # The main accessor to the warden middleware
       def warden
         request.env['warden']
@@ -67,5 +76,6 @@ module Webmate
         end
       end
     end
+=end
   end
 end
