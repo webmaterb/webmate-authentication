@@ -2,7 +2,7 @@ module Webmate
   module Authentication
     module RoutesCollection
       class Builder
-        ALL_ROUTES = [:token, :sign_in, :sign_out, :register]
+        ALL_ROUTES = [:token, :sign_in, :sign_out]
 
         def initialize(scope)
           @scope = scope.to_s.pluralize
@@ -45,8 +45,6 @@ module Webmate
             "/#{@scope}/sessions"
           when :sign_out
             "/#{@scope}/sessions"
-          when :register
-            "/#{@scope}"
           else
             "/#{@scope}"
           end
@@ -69,12 +67,11 @@ module Webmate
         # routes for authorization scope 
         #   scope = [ user, admin, etc ]
         #   options = 
-        #     only: any combination from [:sign_in, :sign_out, :register, :token]
+        #     only: any combination from [:sign_in, :sign_out, :token]
         #     other keys specify custom paths for following actions
         #       :token    - GET   # receive auth token
         #       :sign_in  - POST
         #       :sign_out - DELETE
-        #       :register - POST
         #
         def authorization_for(scope, options = {})
           routes_params = Webmate::Authentication::RoutesCollection::Builder.new(scope).get(options)

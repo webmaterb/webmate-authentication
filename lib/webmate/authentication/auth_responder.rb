@@ -8,6 +8,7 @@ module Webmate::Authentication
       respond_with current_user.to_json
     end
 
+    # return new token
     def token
       if signed_in?
         token_info = generate_auth_token
@@ -23,11 +24,6 @@ module Webmate::Authentication
       warden.logout(scope)
 
       {}
-    end
-
-    def register
-      puts "Implement user creation"
-      puts params.inspect
     end
 
     private
