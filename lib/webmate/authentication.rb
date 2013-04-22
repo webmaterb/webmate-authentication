@@ -9,9 +9,10 @@ require 'webmate/authentication/config'
 require 'webmate/authentication/strategies/password'
 require 'webmate/authentication/routes_collection'
 require 'webmate/authentication/auth_responder'
-
-#Webmate::Application.register Webmate::Authentication::ApplicationHelpers
-#Webmate::Responders::Base.send :include, Webmate::Authentication::ResponderHelpers
+require 'webmate/authentication/application_extension'
+require 'webmate/authentication/token'
 
 Webmate::Application.register Webmate::Authentication::ApplicationHelpers
 Webmate::RoutesCollection.send :include, Webmate::Authentication::RoutesCollection::InstanceMethods
+
+Webmate::Application.send :include, Webmate::Authentication::ApplicationExtension

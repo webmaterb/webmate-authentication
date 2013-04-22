@@ -1,3 +1,4 @@
+require 'redis'
 module Webmate::Authentication
   class AuthResponder < Webmate::Responders::Base
     include ResponderHelpers
@@ -11,7 +12,7 @@ module Webmate::Authentication
     # return new token
     def token
       if signed_in?
-        token_info = generate_auth_token
+        token_info = Webmate::Authentication::Token.new(request, scope).build
       else
         token_info = {}
       end
@@ -20,9 +21,10 @@ module Webmate::Authentication
     end
 
     def sign_out
-      expire_user_auth_token
-      warden.logout(scope)
+      token = Webmate::Authentication::Token.new(request, scope)
+      token.expire
 
+      warden.logout(scope)
       {}
     end
 
@@ -32,38 +34,5 @@ module Webmate::Authentication
     def scope
       params[:scope]
     end
-
-    def generate_auth_token
-      token_info = {
-        'token' => SecureRandom.hex,
-        'expire_at' => 15.minutes.from_now.utc
-      }
-
-      # update record
-      redis.set(redis_key, Yajl::Encoder.encode(token_info))
-
-      token_info
-    end
-
-    def expire_user_auth_token
-      redis.del(redis_key)
-    end
-
-    def token_valid?(token)
-      if value = redis.get(redis_key)
-        token_info = Yajl::Parser.parse(value)
-        token_info['token'] == token && Time.parse(token_info['expires_at']).utc > Time.now.utc
-      else
-        false
-      end
-    end
-
-    def redis_key
-      current_user.token_key
-    end
-
-    def redis
-      @redis ||= EM::Hiredis.connect
-    end 
   end
 end

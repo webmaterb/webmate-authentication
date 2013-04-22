@@ -22,11 +22,6 @@ module Webmate
         self.encrypted_password = BCrypt::Password.create("#{password}#{PASSWORD_SALT}")
       end
 
-      # 
-      def token_key
-        "smth-unique-#{self.class.to_s.downcase}-#{self.id}-key"
-      end
-
       module ClassMethods
         def authenticate(email, password)
           user = where(email: email).first
