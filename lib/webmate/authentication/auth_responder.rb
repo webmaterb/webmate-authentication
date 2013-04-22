@@ -1,7 +1,7 @@
 require 'redis'
 module Webmate::Authentication
   class AuthResponder < Webmate::Responders::Base
-    include ResponderHelpers
+    include Helpers::ResponderHelpers
 
     def sign_in
       authenticate(params.merge(scope: scope))

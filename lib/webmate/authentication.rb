@@ -1,7 +1,6 @@
 require 'warden'
 require 'webmate/application'
 require 'webmate/responders/base'
-require 'webmate/authentication/helpers'
 require 'webmate/authentication/application_helpers'
 require 'webmate/authentication/responder_helpers'
 require 'webmate/authentication/model'
