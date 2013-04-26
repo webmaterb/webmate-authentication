@@ -6,7 +6,10 @@ module Webmate::Authentication
     def sign_in
       authenticate(params.merge(scope: scope))
 
-      respond_with current_user.to_json
+      respond_with current_user.to_json(
+        except: [:encrypted_password, :_id],
+        methods: :id
+      )
     end
 
     # return new token
