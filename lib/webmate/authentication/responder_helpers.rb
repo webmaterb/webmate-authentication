@@ -20,6 +20,7 @@ module Webmate
         def authenticate(*args)
           warden.authenticate(*args)
         end
+
         alias_method :login, :authenticate
       end
     end

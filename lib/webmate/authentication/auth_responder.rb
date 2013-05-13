@@ -3,6 +3,8 @@ module Webmate::Authentication
   class AuthResponder < Webmate::Responders::Base
     include Helpers::ResponderHelpers
 
+    # params[:scope]
+
     def sign_in
       authenticate(params.merge(scope: scope))
 
@@ -24,11 +26,13 @@ module Webmate::Authentication
     end
 
     def sign_out
-      token = Webmate::Authentication::Token.new(request, scope)
-      token.expire
+      if signed_in?
+        token = Webmate::Authentication::Token.new(request, scope)
+        token.expire
 
-      warden.logout(scope)
-      {}
+        warden.logout(scope)
+      end
+      {}.to_json
     end
 
     private

@@ -79,7 +79,10 @@ module Webmate
             add_route(Webmate::Route.new(route_params))
           end
 
+          # TODO
+          # responders/views should have methods
           # define current_#{scope} and current_#{scope}_id for BaseResponder
+          self.class.send(:define_method, "current_#{scope.to_s}_id") { @responder }
         end
       end
     end
