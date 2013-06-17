@@ -11,7 +11,7 @@ module Webmate::Authentication
     # and store this to redis
     def build
       @token = SecureRandom.hex
-      @expire_at = 15.minutes.from_now.utc
+      @expire_at = 60.minutes.from_now.utc
 
       @token_info = { 
         'token' => @token,
@@ -34,6 +34,8 @@ module Webmate::Authentication
     def valid?
       return false if model.blank? # user not logged in with current scope.
       value = redis.get(token_key)
+
+      return false if value.blank?
       token_info = Yajl::Parser.parse(value)
 
       token = @request.params["token"]
